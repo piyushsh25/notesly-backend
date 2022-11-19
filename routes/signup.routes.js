@@ -26,6 +26,10 @@ router.post("/", async (req, res) => {
             trash: [],
             bio: [...bio]
         })
+        const existingUser=NoteslyUsers.find({username});
+        if(existingUser){
+            return res.status(422).json({success:false,message:"user already exists."})
+        }
         //saves the user
         const saveUser = await newUser.save()
         //generates a token with userID in it, and expires in 48hrs
