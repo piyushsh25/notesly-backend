@@ -26,6 +26,7 @@ router.post("/", async (req, res) => {
             trash: [],
             bio: [...bio]
         })
+        // check if the username already exists
         const existingUser=NoteslyUsers.find({username});
         if(existingUser){
             return res.status(422).json({success:false,message:"user already exists."})

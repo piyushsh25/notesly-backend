@@ -10,12 +10,14 @@ initializeDatabase();
 const notesV1=require("./routes/notes.routes")
 const {authVerify}=require("./middleware/authentication")
 const signup=require("./routes/signup.routes")
+const login=require("./routes/login.routes")
 app.get("/", authVerify,(req, res) => {
     res.send({ success: true, message: "hi! welcome to notesly backend" })
 })
 
 app.use("/notes",notesV1)
 app.use("/signup",signup)
+app.use("/login",login)
 
 app.get("/",(req,res)=>{
     res.send({success:true,message:"hi! welcome to notesly backend"})
