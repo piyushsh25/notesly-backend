@@ -6,12 +6,15 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 require('dotenv').config();
-const secret=process.env.TOKEN
-const authVerify=(req,res,next)=>{
-    // const token=req.headers.authorization
-    console.log("here")
-    // console.log(token)
-    req.user={user:"Piyush"}
-    return next();
+const secret = process.env.TOKEN
+const authVerify = (req, res, next) => {
+    const token = req.headers.authorization
+    try {
+        const decode = jwt.verify(token, secret);
+        req.user = { userId: decode.userId }
+        return next();
+    } catch (error) {
+        res.status(401).json({ success: false, message: "unauthorized access" })
+    }
 }
-module.exports={authVerify}
+module.exports = { authVerify }

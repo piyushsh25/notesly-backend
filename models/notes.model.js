@@ -9,8 +9,8 @@ const notesSchema = new Schema(
         fontFamily: String,
         backgroundColor: String,
         pinned: Boolean,
-        tags: [String]
+        tags: String
     }
 )
-const NoteslyPosts = mongoose.model("Notes", notesSchema)
+const NoteslyPosts = mongoose.model("notes", notesSchema)
 module.exports = { NoteslyPosts }

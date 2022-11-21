@@ -21,9 +21,6 @@ router.post("/", async (req, res) => {
             firstName: firstName,
             lastName: lastName,
             password: password,
-            notes: [],
-            archive: [],
-            trash: [],
             bio: [...bio]
         })
         // check if the username already exists

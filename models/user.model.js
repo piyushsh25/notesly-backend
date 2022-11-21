@@ -7,9 +7,6 @@ const UserSchema = new Schema(
         firstName: String,
         lastName: String,
         password: String,
-        notes: [],
-        archive: [],
-        trash: [],
         bio: [String]
     }
 )
