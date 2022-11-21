@@ -11,11 +11,16 @@ const notesV1 = require("./routes/notes.routes")
 const { authVerify } = require("./middleware/authentication")
 const signup = require("./routes/signup.routes")
 const login = require("./routes/login.routes");
+const archiveV1=require("./routes/archive.routes")
+const trashV1=require("./routes/trash.routes")
 const { NoteslyUsers } = require("./models/user.model.js");
 
 app.use("/signup", signup)
 app.use("/login", login)
 app.use("/notes", notesV1)
+app.use("/archive", archiveV1)
+app.use("/trash", trashV1)
+
 app.get("/", async (req, res) => {
     res.status(200).send({ success: true, mesaage: "welcome to notesly backend." })
 })
