@@ -5,15 +5,15 @@ const cors = require("cors");
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
-const initializeDatabase = require("../db/db.connect.js");
+const initializeDatabase = require("./db/db.connect.js");
 initializeDatabase();
-const notesV1 = require("../routes/notes.routes")
-const { authVerify } = require("../middleware/authentication")
-const signup = require("../routes/signup.routes")
-const login = require("../routes/login.routes");
-const archiveV1=require("../routes/archive.routes")
-const trashV1=require("../routes/trash.routes")
-const { NoteslyUsers } = require("../models/user.model.js");
+const notesV1 = require("./routes/notes.routes")
+const { authVerify } = require("./middleware/authentication")
+const signup = require("./routes/signup.routes")
+const login = require("./routes/login.routes");
+const archiveV1=require("./routes/archive.routes")
+const trashV1=require("./routes/trash.routes")
+const { NoteslyUsers } = require("./models/user.model.js");
 
 app.use("/signup", signup)
 app.use("/login", login)
