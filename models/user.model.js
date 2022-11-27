@@ -7,7 +7,9 @@ const UserSchema = new Schema(
         firstName: String,
         lastName: String,
         password: String,
-        bio: [String]
+        bio: String,
+        createDate:String,
+        formatDate:String
     }
 )
 const NoteslyUsers=mongoose.model("Users",UserSchema)

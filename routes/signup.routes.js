@@ -1,6 +1,7 @@
 // signup route complete
 const express = require("express");
 var jwt = require('jsonwebtoken');
+const { formatDate } = require("../middleware/authentication");
 const { NoteslyUsers } = require("../models/user.model");
 const router = express.Router();
 const secret = process.env.TOKEN
@@ -21,21 +22,26 @@ router.post("/", async (req, res) => {
             firstName: firstName,
             lastName: lastName,
             password: password,
-            bio: [...bio]
+            bio: bio,
+            createDate:formatDate(),
+            formatDate:formatDate()
         })
         // check if the username already exists
-        const existingUser=NoteslyUsers.find({username});
-        if(existingUser){
-            return res.status(422).json({success:false,message:"user already exists."})
+        const existingUser = await NoteslyUsers.find({ username:username });
+        if (existingUser.length==0) {
+            //saves the user
+            const saveUser = await newUser.save()
+            //generates a token with userID in it, and expires in 48hrs
+            const token = jwt.sign({ userID: userID }, secret, { expiresIn: `48h` })
+            // if success returns the user and the token
+            res.status(200).json({ success: true, user: saveUser, token })
         }
-        //saves the user
-        const saveUser = await newUser.save()
-        //generates a token with userID in it, and expires in 48hrs
-        const token = jwt.sign({ userID: userID }, secret, { expiresIn: `48h` })
-        // if success returns the user and the token
-        res.status(200).json({ success: true, user:saveUser,token})
-    } catch(error) {
-        res.status(500).json({success:false,message:error})
+        else {
+            console.log(existingUser.length)
+            return res.status(422).json({ success: false, message: "user already exists." })
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: error })
     }
 })
 module.exports = router

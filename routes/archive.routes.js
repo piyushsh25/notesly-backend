@@ -1,6 +1,6 @@
 const express = require("express");
-const { authVerify } = require("../middleware/authentication");
-const { NoteslyPosts, ArchivePosts } = require("../models/notes.model");
+const { authVerify, formatDate } = require("../middleware/authentication");
+const { ArchivePosts, NoteslyPosts } = require("../models/notes.model");
 const router = express.Router();
 router.route("/")
     .get(authVerify, async (req, res) => {
@@ -37,11 +37,14 @@ router.route("/add")
                 fontFamily: fontFamily,
                 backgroundColor: backgroundColor,
                 pinned: pinned,
-                tags: tags
+                tags: tags,
+                createDate:formatDate(),
+                formatDate:formatDate()  
             })
             //save the note
             const saveNotes = await newNote.save()
-            const notes = await NoteslyPosts.find({ userId })
+            const deleteItem = await NoteslyPosts.deleteOne({ noteId })
+            const notes = await ArchivePosts.find({ userId })
             res.status(200).json({ success: true, message: notes })
         } catch (error) {
             res.status(404).json({ success: false, message: "error in saving data" })
@@ -54,8 +57,7 @@ router.route("/:id")
             const { id } = req.params
             // find note by note id.
             const requestedNote = await ArchivePosts.find({ noteId: id });
-            const notes = await NoteslyPosts.find({ userId })
-            res.status(200).json({ success: true, message: notes })
+            res.status(200).json({ success: true, message: requestedNote })
         } catch (error) {
             res.status(404).json({ success: false, message: "error in getting data" })
         }
@@ -67,37 +69,40 @@ router.route("/edit/:id")
             const { id } = req.params
             // read body.user and store it
             const requiredNotes = req.body.user
+            const getNote = await ArchivePosts.find({ id })
             // userid and requirednote in one object to save it
             const condition = {
-                ...requiredNotes, userId
+                ...getNote, ...requiredNotes, userId, formatDate: formatDate()
             }
             // update the note (selet note by note id)
             const updateNote = await ArchivePosts.findOneAndUpdate({ noteId: id }, condition)
-            res.status(200).json({ success: true, message: updateNote })
+            const notes=await ArchivePosts.find({userId})
+            res.status(200).json({ success: true, message: notes })
         } catch (error) {
             res.status(404).json({ success: false, message: "error saving data" })
         }
     })
-router.route("/delete/:id")
-    .delete(authVerify, async (req, res) => {
-        try {
-            const { userId } = req.user
-            const { id } = req.params
-            // delete using noteId
-            const deleteItem = await ArchivePosts.deleteOne({ id })
-            const notes = await NoteslyPosts.find({ userId })
-            res.status(200).json({ success: true, message: notes })
-        } catch {
-            res.status(404).json({ success: false, message: "error deleting data" })
-        }
-    })
+    //use add to trash route for this.
+// router.route("/delete/:id")
+//     .delete(authVerify, async (req, res) => {
+//         try {
+//             const { userId } = req.user
+//             const { id } = req.params
+//             // delete using noteId
+//             const deleteItem = await ArchivePosts.deleteOne({ id })
+//             const notes = await ArchivePosts.find({ userId })
+//             res.status(200).json({ success: true, message: notes })
+//         } catch {
+//             res.status(404).json({ success: false, message: "error deleting data" })
+//         }
+//     })
 router.route("/delete")
     .delete(authVerify, async (req, res) => {
         try {
             const { userId } = req.user
             // delete using noteId
             const deleteItem = await ArchivePosts.deleteMany({ userId: userId })
-            const notes = await NoteslyPosts.find({ userId })
+            const notes = await ArchivePosts.find({ userId })
             res.status(200).json({ success: true, message: notes })
         } catch {
             res.status(404).json({ success: false, message: "error deleting data" })

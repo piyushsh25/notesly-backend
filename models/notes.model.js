@@ -9,7 +9,9 @@ const notesSchema = new Schema(
         fontFamily: String,
         backgroundColor: String,
         pinned: Boolean,
-        tags: String
+        tags: String,
+        createDate:String,
+        formatDate:String
     }
 )
 const NoteslyPosts = mongoose.model("notes", notesSchema)

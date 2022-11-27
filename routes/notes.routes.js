@@ -1,5 +1,5 @@
 const express = require("express");
-const { authVerify } = require("../middleware/authentication");
+const { authVerify, formatDate } = require("../middleware/authentication");
 const { NoteslyPosts } = require("../models/notes.model");
 const router = express.Router();
 router.route("/")
@@ -9,7 +9,7 @@ router.route("/")
             const { userId } = req.user
             //find notes by userid
             const notes = await NoteslyPosts.find({ userId })
-            res.status(200).json({ success: false, message: notes })
+            res.status(200).json({ success: true, message: notes })
         } catch (error) {
             res.status(500).json({ success: false, message: error })
         }
@@ -37,7 +37,9 @@ router.route("/add")
                 fontFamily: fontFamily,
                 backgroundColor: backgroundColor,
                 pinned: pinned,
-                tags: tags
+                tags: tags,
+                createDate: formatDate(),
+                formatDate: formatDate()
             })
             //save the note
             const saveNotes = await newNote.save()
@@ -66,9 +68,11 @@ router.route("/edit/:id")
             const { id } = req.params
             // read body.user and store it
             const requiredNotes = req.body.user
+            //get the notes from id from database
+            const getNote=await NoteslyPosts.find({id})
             // userid and requirednote in one object to save it
             const condition = {
-                ...requiredNotes, userId
+                ...getNote,...requiredNotes, userId,formatDate:formatDate()
             }
             // update the note (selet note by note id)
             const updateNote = await NoteslyPosts.findOneAndUpdate({ noteId: id }, condition)
@@ -78,19 +82,20 @@ router.route("/edit/:id")
             res.status(404).json({ success: false, message: "error saving data" })
         }
     })
-router.route("delete/:id")
-    .delete(authVerify, async (req, res) => {
-        try {
-            const { userId } = req.user
-            const { id } = req.params
-            // delete using noteId
-            const deleteItem = await NoteslyPosts.deleteOne({ id })
-            const notes = await NoteslyPosts.find({ userId })
-            res.status(200).json({ success: true, message: notes })
-        } catch {
-            res.status(404).json({ success: false, message: "error deleting data" })
-        }
-    })
+    // to delete notes use add to trash route
+// router.route("/delete/:id")
+//     .delete(authVerify, async (req, res) => {
+//         try {
+//             const { userId } = req.user
+//             const { id } = req.params
+//             // delete using noteId
+//             const deleteItem = await NoteslyPosts.deleteOne({ id })
+//             const notes = await NoteslyPosts.find({ userId })
+//             res.status(200).json({ success: true, message: notes })
+//         } catch {
+//             res.status(404).json({ success: false, message: "error deleting data" })
+//         }
+//     })
 router.route("/delete")
     .delete(authVerify, async (req, res) => {
         try {

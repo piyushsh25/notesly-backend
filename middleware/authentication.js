@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser")
 const app = express();
+const dayjs= require("dayjs");
 app.use(cors());
 app.use(bodyParser.json());
 require('dotenv').config();
@@ -17,4 +18,5 @@ const authVerify = (req, res, next) => {
         res.status(401).json({ success: false, message: "unauthorized access" })
     }
 }
-module.exports = { authVerify }
+const formatDate = () => dayjs().format("YYYY-MM-DDTHH:mm:ssZ");
+module.exports = { authVerify ,formatDate}

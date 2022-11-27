@@ -19,7 +19,7 @@ router.post("/", async (req, res) => {
         if (foundUser.password === password) {
             const token = jwt.sign({ userId: foundUser.userId }, secret, { expiresIn: `48h` })
             foundUser.password = undefined
-            res.status(200).json({ success: true, token, foundUser })
+            res.status(200).json({ success: true, token, message:foundUser })
         // return error if password incorrect
         } else {
             return res.status(401).json({ success: false, message: "incorrect password" })
