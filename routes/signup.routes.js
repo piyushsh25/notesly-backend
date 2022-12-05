@@ -12,6 +12,7 @@ router.post("/", async (req, res) => {
         username,
         firstName,
         lastName,
+        email,
         password,
         bio } = req.body.user
     try {
@@ -21,14 +22,15 @@ router.post("/", async (req, res) => {
             username: username,
             firstName: firstName,
             lastName: lastName,
+            email: email,
             password: password,
             bio: bio,
-            createDate:formatDate(),
-            formatDate:formatDate()
+            createDate: formatDate(),
+            formatDate: formatDate()
         })
         // check if the username already exists
-        const existingUser = await NoteslyUsers.find({ username:username });
-        if (existingUser.length==0) {
+        const existingUser = await NoteslyUsers.find({ username: username });
+        if (existingUser.length == 0) {
             //saves the user
             const saveUser = await newUser.save()
             //generates a token with userID in it, and expires in 48hrs
