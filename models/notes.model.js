@@ -9,7 +9,7 @@ const notesSchema = new Schema(
         fontFamily: String,
         backgroundColor: String,
         pinned: Boolean,
-        tags: String,
+        tags: [],
         createDate:String,
         formatDate:String
     }
