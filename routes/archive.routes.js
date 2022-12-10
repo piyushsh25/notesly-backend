@@ -19,18 +19,30 @@ router.route("/add")
         try {
             const { userId } = req.user
             //read note details from body.user
-            const { noteId } = req.body.user
-            // find note in the main note section
-            const findNote = await NoteslyPosts.find({ noteId })
+            const {
+                noteId,  
+            } = req.body.user
             //create a new note
-            const newNote = await new ArchivePosts(findNote)
+            const findNote=await NoteslyPosts.find({noteId})
+            const foundNote=findNote[0]
             //save the note
-            const saveNotes = await newNote.save()
-            const deleteItem = await NoteslyPosts.deleteOne({ noteId })
+            const addToArchive=await new ArchivePosts({
+                userId,
+                noteId,
+                header: foundNote.header,
+                content: foundNote.content,
+                fontFamily: foundNote.fontFamily,
+                backgroundColor: foundNote.backgroundColor,
+                pinned: foundNote.pinned,
+                tags: foundNote.tags,
+                createDate: foundNote.createDate,
+                formatDate: formatDate()
+            })
+            const saveArchive=await addToArchive.save()
             const archiveNotes = await ArchivePosts.find({ userId })
-            const  notes= await NoteslyPosts.find({ userId })
-
-            res.status(200).json({ success: true, message: { notes: notes, archiveNotes: archiveNotes } })
+            const deleteFromNotes = await NoteslyPosts.deleteOne({ noteId })
+            const userNotes = await NoteslyPosts.find({ userId })
+            res.status(200).json({ success: true, message: {archiveNotes:archiveNotes,userNotes:userNotes} })
         } catch (error) {
             res.status(404).json({ success: false, message: "error in saving data" })
         }
@@ -61,13 +73,13 @@ router.route("/edit/:id")
             }
             // update the note (selet note by note id)
             const updateNote = await ArchivePosts.findOneAndUpdate({ noteId: id }, condition)
-            const notes = await ArchivePosts.find({ userId })
+            const notes=await ArchivePosts.find({userId})
             res.status(200).json({ success: true, message: notes })
         } catch (error) {
             res.status(404).json({ success: false, message: "error saving data" })
         }
     })
-//use add to trash route for this.
+    //use add to trash route for this.
 // router.route("/delete/:id")
 //     .delete(authVerify, async (req, res) => {
 //         try {

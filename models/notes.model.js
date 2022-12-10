@@ -18,7 +18,7 @@ const notesSchema = new Schema(
     }
 )
 const NoteslyPosts = mongoose.model("notes", notesSchema)
-const ArchivePosts = mongoose.model("archive", notesSchema)
+const ArchivePosts = mongoose.model("archives", notesSchema)
 const TrashPosts = mongoose.model("trash", notesSchema)
 
 module.exports = { NoteslyPosts, ArchivePosts, TrashPosts }
