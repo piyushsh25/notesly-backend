@@ -17,7 +17,7 @@ router.route("/")
 router.route("/add")
     .post(authVerify, async (req, res) => {
         try {
-            const { userId } = req.user
+            const { userId } = await req.user
             //read note details from body.user
             const {
                 noteId,
