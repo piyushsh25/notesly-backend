@@ -83,19 +83,19 @@ router.route("/edit/:id")
         }
     })
     // to delete notes use add to trash route
-// router.route("/delete/:id")
-//     .delete(authVerify, async (req, res) => {
-//         try {
-//             const { userId } = req.user
-//             const { id } = req.params
-//             // delete using noteId
-//             const deleteItem = await NoteslyPosts.deleteOne({ id })
-//             const notes = await NoteslyPosts.find({ userId })
-//             res.status(200).json({ success: true, message: notes })
-//         } catch {
-//             res.status(404).json({ success: false, message: "error deleting data" })
-//         }
-//     })
+router.route("/delete/:id")
+    .delete(authVerify, async (req, res) => {
+        try {
+            const { userId } = req.user
+            const { id } = req.params
+            // delete using noteId
+            const deleteItem = await NoteslyPosts.deleteOne({ id })
+            const notes = await NoteslyPosts.find({ userId })
+            res.status(200).json({ success: true, message: notes })
+        } catch {
+            res.status(404).json({ success: false, message: "error deleting data" })
+        }
+    })
 router.route("/delete")
     .delete(authVerify, async (req, res) => {
         try {
