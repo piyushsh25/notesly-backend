@@ -1,6 +1,6 @@
 const express = require("express");
 const { authVerify, formatDate } = require("../middleware/authentication");
-const { NoteslyPosts } = require("../models/notes.model");
+const { NoteslyPosts, TrashPosts, ArchivePosts } = require("../models/notes.model");
 const router = express.Router();
 router.route("/")
     .get(authVerify, async (req, res) => {
@@ -79,6 +79,48 @@ router.route("/edit/:id")
             const notes = await NoteslyPosts.find({ userId })
 
             res.status(200).json({ success: true, message: notes })
+        } catch (error) {
+            res.status(404).json({ success: false, message: "error saving data" })
+        }
+    })
+// move to note handler from archive and trash
+router.route("/add/:id")
+    .post(authVerify, async (req, res) => {
+        try {
+            const { userId } = req.user
+            const { id } = req.params
+            // read body.user and store it
+            const requiredNotes = req.body.user
+            //get the notes from id from database
+            const deleteFromNotes = await TrashPosts.deleteOne({ id })
+            const deleteFromArchive = await ArchivePosts.deleteOne({ id })
+            const {
+                header,
+                content,
+                fontFamily,
+                backgroundColor,
+                pinned,
+                tags,
+                createDate
+            } = req.body.user
+            // userid and requirednote in one object to save it
+            const newNote = await new NoteslyPosts({
+                userId: userId,
+                noteId: id,
+                header: header,
+                content: content,
+                fontFamily: fontFamily,
+                backgroundColor: backgroundColor,
+                pinned: pinned,
+                tags: tags,
+                createDate: createDate,
+                formatDate: formatDate()
+            })
+            // update the note (selet note by note id)
+            const notes = await NoteslyPosts.find({ userId })
+            const archiveNotes = await ArchivePosts.find({ userId })
+            const trashNotes = await TrashPosts.find({ userId })
+            res.status(200).json({ success: true, message: { notes: notes, archiveNotes: archiveNotes, trashNotes: trashNotes } })
         } catch (error) {
             res.status(404).json({ success: false, message: "error saving data" })
         }
