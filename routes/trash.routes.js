@@ -53,7 +53,7 @@ router.route("/add/:id")
             // get the notes and archived notes
             const notes = await NoteslyPosts.find({ userId })
             const archiveNotes = await ArchivePosts.find({ userId })
-            res.status(200).json({ success: true, message: {notes,trashNotes,archiveNotes} })
+            res.status(200).json({ success: true, message: {notes:notes,trashNotes:trashNotes,archiveNotes:archiveNotes} })
         } catch (error) {
             res.status(404).json({ success: false, message: "error in saving data" })
         }
