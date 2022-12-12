@@ -93,7 +93,6 @@ router.route("/add/:id")
             const requiredNotes = req.body.user
             //get the notes from id from database
             const deleteFromNotes = await TrashPosts.deleteOne({ id })
-            const deleteFromArchive = await ArchivePosts.deleteOne({ id })
             const {
                 header,
                 content,
@@ -103,6 +102,7 @@ router.route("/add/:id")
                 tags,
                 createDate
             } = req.body.user
+
             // userid and requirednote in one object to save it
             const newNote = await new NoteslyPosts({
                 userId: userId,
@@ -116,7 +116,7 @@ router.route("/add/:id")
                 createDate: createDate,
                 formatDate: formatDate()
             })
-            // update the note (selet note by note id)
+            const saveNotes = await newNote.save()
             const notes = await NoteslyPosts.find({ userId })
             const archiveNotes = await ArchivePosts.find({ userId })
             const trashNotes = await TrashPosts.find({ userId })
