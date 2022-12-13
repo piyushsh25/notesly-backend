@@ -14,12 +14,12 @@ router.route("/")
             res.status(500).json({ success: false, message: error })
         }
     })
-    // id ===noteId
+// id ===noteId
 router.route("/add/:id")
     .post(authVerify, async (req, res) => {
         try {
             const { userId } = req.user
-            const {id}=req.params
+            const { id } = req.params
             //read note details from body.user
             const {
                 noteId,
@@ -40,20 +40,20 @@ router.route("/add/:id")
                 backgroundColor: backgroundColor,
                 pinned: pinned,
                 tags: tags,
-                createDate:formatDate(),
-                formatDate:formatDate()
+                createDate: formatDate(),
+                formatDate: formatDate()
             })
             //save the note 
             const saveNotes = await newNote.save()
             // find the posts in trash
             const trashNotes = await TrashPosts.find({ userId })
             // delete the note by the give id [from notes or archived if any]
-            const deleteFromNotes=await NoteslyPosts.deleteOne({id})
-            const deleteFromArchive=await ArchivePosts.deleteOne({id})
+            const deleteFromNotes = await NoteslyPosts.deleteOne({ id })
+            const deleteFromArchive = await ArchivePosts.deleteOne({ id })
             // get the notes and archived notes
             const notes = await NoteslyPosts.find({ userId })
             const archiveNotes = await ArchivePosts.find({ userId })
-            res.status(200).json({ success: true, message: {notes:notes,trashNotes:trashNotes,archiveNotes:archiveNotes} })
+            res.status(200).json({ success: true, message: { notes: notes, trashNotes: trashNotes, archiveNotes: archiveNotes } })
         } catch (error) {
             res.status(404).json({ success: false, message: "error in saving data" })
         }
@@ -77,10 +77,10 @@ router.route("/edit/:id")
             const { id } = req.params
             // read body.user and store it
             const requiredNotes = req.body.user
-            const getNotes=await TrashPosts.find({id})
+            const getNotes = await TrashPosts.find({ id })
             // userid and requirednote in one object to save it
             const condition = {
-                ...getNotes,...requiredNotes,formatDate:formatDate()
+                ...getNotes, ...requiredNotes, formatDate: formatDate()
             }
             // update the note (selet note by note id)
             const updateNote = await TrashPosts.findOneAndUpdate({ noteId: id }, condition)
@@ -97,8 +97,8 @@ router.route("/delete/:id")
             const { id } = req.params
             // delete using noteId from trash posts
             const deleteItem = await TrashPosts.deleteOne({ id })
-            const notes = await NoteslyPosts.find({ userId })
-            res.status(200).json({ success: true, message: notes })
+            const notes = await TrashPosts.find({ userId })
+            res.status(200).json({ success: true, message: { trashNotes: notes } })
         } catch {
             res.status(404).json({ success: false, message: "error deleting data" })
         }
