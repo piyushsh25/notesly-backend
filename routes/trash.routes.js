@@ -109,8 +109,8 @@ router.route("/delete")
             const { userId } = req.user
             // delete using noteId from trash posts
             const deleteItem = await TrashPosts.deleteMany({ userId: userId })
-            const notes = await NoteslyPosts.find({ userId })
-            res.status(200).json({ success: true, message: notes })
+            const notes = await TrashPosts.find({ userId })
+            res.status(200).json({ success: true, message: {trashNotes:notes} })
         } catch {
             res.status(404).json({ success: false, message: "error deleting data" })
         }
