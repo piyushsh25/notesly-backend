@@ -8,7 +8,7 @@ const UserSchema = new Schema(
         lastName: String,
         email:String,
         password: String,
-        bio: String,
+        bio: [],
         createDate:String,
         formatDate:String
     }
