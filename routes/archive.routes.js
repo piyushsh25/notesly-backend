@@ -71,7 +71,6 @@ router.route("/edit/:id")
             const condition = {
                 ...getNote, ...requiredNotes, userId, formatDate: formatDate()
             }
-            console.log(condition)
             // update the note (selet note by note id)
             const updateNote = await ArchivePosts.findOneAndUpdate({ noteId: id }, condition)
             const notes=await ArchivePosts.find({userId})
