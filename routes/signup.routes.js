@@ -14,7 +14,7 @@ router.post("/", async (req, res) => {
         lastName,
         email,
         password,
-        bio } = req.body.user
+        bio, linkedInLink, githubLink, image } = req.body.user
     try {
         //added the schema of new user
         const newUser = await new NoteslyUsers({
@@ -25,6 +25,9 @@ router.post("/", async (req, res) => {
             email: email,
             password: password,
             bio: bio,
+            linkedInLink,
+            githubLink,
+            image,
             createDate: formatDate(),
             formatDate: formatDate()
         })
