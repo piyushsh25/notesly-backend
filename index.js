@@ -18,10 +18,11 @@ const { NoteslyUsers } = require("./models/user.model.js");
 
 app.use("/signup", signup)
 app.use("/login", login)
+app.use("/user", userEdit)
 app.use("/notes", notesV1)
 app.use("/archive", archiveV1)
 app.use("/trash", trashV1)
-app.use("/user", userEdit)
+
 app.get("/", async (req, res) => {
     res.status(200).send({ success: true, mesaage: "welcome to notesly backend." })
 })
