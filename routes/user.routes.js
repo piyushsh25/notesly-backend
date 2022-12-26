@@ -1,5 +1,4 @@
 const express = require("express");
-var jwt = require('jsonwebtoken');
 const { formatDate, authVerify } = require("../middleware/authentication");
 const { NoteslyUsers } = require("../models/user.model");
 const router = express.Router();
@@ -21,3 +20,4 @@ router.route("/edit")
 
         }
     })
+module.exports = router
