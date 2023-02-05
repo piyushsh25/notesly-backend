@@ -79,7 +79,7 @@ router.route("/edit/:id")
             }
             // update the note (selet note by note id)
             const updateNote = await NoteslyPosts.findOneAndUpdate({ noteId: id }, condition)
-            const notes = await NoteslyPosts.find({ userId })
+            const notes = await NoteslyPosts.find({ noteId })
 
             res.status(200).json({ success: true, message: notes })
         } catch (error) {
