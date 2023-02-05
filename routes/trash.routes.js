@@ -66,7 +66,7 @@ router.route("/:id")
             // find note by note id from trash posts.
             const requestedNote = await TrashPosts.find({ noteId: id });
             if(requestedNote.length<1){
-                res.status(404).json({ success: false, message: "error in getting data" })
+               return res.status(404).json({ success: false, message: "error in getting data" })
             }
             res.status(200).json({ success: true, message: requestedNote })
         } catch (error) {
