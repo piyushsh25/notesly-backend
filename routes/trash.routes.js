@@ -44,14 +44,20 @@ router.route("/add/:id")
                 formatDate: formatDate()
             })
             //save the note 
-            const saveNotes = await newNote.save()
-            // find the posts in trash
-            const trashNotes = await TrashPosts.find({ userId })
+           
             // delete the note by the give id [from notes or archived if any]
-            const deleteFromNotes = await NoteslyPosts.deleteOne({ id })
-            const deleteFromArchive = await ArchivePosts.deleteOne({ id })
+
+            let notes = await NoteslyPosts.find({ id })
+            if (notes.length >= 1) {
+                const deleteItem = await NoteslyPosts.deleteOne({ id })
+                const saveNotes = await newNote.save()
+            }else{
+                const deleteFromArchive = await ArchivePosts.deleteOne({ id })
+                const saveNotes = await newNote.save()
+            }
             // get the notes and archived notes
-            const notes = await NoteslyPosts.find({ userId })
+            const trashNotes = await TrashPosts.find({ userId })
+            notes = await NoteslyPosts.find({ userId })
             const archiveNotes = await ArchivePosts.find({ userId })
             res.status(200).json({ success: true, message: { notes: notes, trashNotes: trashNotes, archiveNotes: archiveNotes } })
         } catch (error) {
@@ -65,8 +71,8 @@ router.route("/:id")
             const { id } = req.params
             // find note by note id from trash posts.
             const requestedNote = await TrashPosts.find({ noteId: id });
-            if(requestedNote.length<1){
-               return res.status(404).json({ success: false, message: "error in getting data" })
+            if (requestedNote.length < 1) {
+                return res.status(404).json({ success: false, message: "error in getting data" })
             }
             res.status(200).json({ success: true, message: requestedNote })
         } catch (error) {
@@ -113,7 +119,7 @@ router.route("/delete")
             // delete using noteId from trash posts
             const deleteItem = await TrashPosts.deleteMany({ userId: userId })
             const notes = await TrashPosts.find({ userId })
-            res.status(200).json({ success: true, message: {trashNotes:notes} })
+            res.status(200).json({ success: true, message: { trashNotes: notes } })
         } catch {
             res.status(404).json({ success: false, message: "error deleting data" })
         }
